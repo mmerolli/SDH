@@ -31,42 +31,46 @@ router.get('/accounts', (req,res) => {
 router.post('/register', (req, res) => {
   const { email, hash } = req.body;
   const existingUser = accounts.find(obj => obj.email == email);
-        if(!existingUser){
-                accounts.push({
-                        email,
-                        hash
-                });
-                res.status(200);
-        }
-        res.status(500);
+  if(!existingUser){
+    accounts.push({
+            email,
+            hash
+    });
+    res.status(200);
+}
+res.status(500);
 });
 
 router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-        console.log({email,password});
-  const existingUser = accounts.find(obj => obj.email == email);
-  if (existingUser) {
-    if (bcrypt.compareSync(password, existingUser.hash )) {
-      res.status(200).json({message: "authenticated successfully!!"});
-   console.log('bene'); } else {
-      res.status(500).json({error:"The provided password is incorrect!"});
-    console.log('male1');}
-  } else {
-    res.status(500).json({error:"The provided email does not exist!"});
- console.log('male2'); }
+const { email, password } = req.body;
+console.log({email,password});
+const existingUser = accounts.find(obj => obj.email == email);
+if (existingUser) {
+if (bcrypt.compareSync(password, existingUser.hash )) {
+res.status(200).json({message: "authenticated successfully!!"});
+console.log('bene'); } else {
+  res.status(500).json({error:"The provided password is incorrect!"});
+console.log('male1');}
+} else {
+res.status(500).json({error:"The provided email does not exist!"});
+console.log('male2'); }
 });
 
 
+
+
+
 const patients = [
-  {
-    "firstname": "martina",
-    "lastname": "merolli",
-    "email": "martina@merolli.com",
-    "password": "lalalal"
+{
+"firstname": "martina",
+"lastname": "merolli",
+"email": "martina@merolli.com",
+"password": "lalalal"
   }
 ];
+
 router.get('/patients', async (req, res) => {
-  const allPatients = await prisma.patients.findMany()
+const allPatients = await prisma.patients.findMany();
   res.json(allPatients)
 })
 
@@ -75,38 +79,39 @@ router.get('/patients/:id', async (req, res) => {
   const patients = await prisma.patients.findUnique({
     where: { id: parseInt(id) }
   })
-  res.json(patients)
+  const allPatients = await prisma.patients.findMany();
+  res.json(allPatients)
 })
-
 router.post('/patients', async (req, res) => {
   const { firstname, lastname, email } = req.body
   const patients = await prisma.patients.create({
     data: { firstname, lastname, email }
   })
-  res.json(patients)
+  const allPatients = await prisma.patients.findMany();
+  res.json(allPatients)
 })
 
 
-router.put('/patients/:id', async (req, res) => {
+router.put('/patients:id', async (req, res) => {
   const { id } = req.params
   const { firstname, lastname, email } = req.body
   const patients = await prisma.patients.update({where: { id: parseInt(id) },
     data: { firstname, lastname, email }
   })
-  res.json(patients)
+  const allPatients = await prisma.patients.findMany();
+  res.json(allPatients)
 })
 
-router.delete('/patients/:id', async (req, res) => {
-  const { id } = req.params
-  const patient = await prisma.patient.delete({
-    where: { id: parseInt(id) }  })
-  res.json(patient)
+router.delete('/patients/:email', async (req, res) => {
+  const { email } = req.params
+        console.log(email)
+  const patient = await prisma.patients.delete({
+          where: { email }  })
+        
+const allPatients = await prisma.patients.findMany();
+  res.json(allPatients)
 })
 
-// Get all Method
-router.get('/patients', (req, res) => {
-  res.json(patients)
-})
 
 // Get by ID Method
 router.get('/patients', (req, res) => {
@@ -158,6 +163,6 @@ router.delete('/patients/:index', (req, res) => {
   patients.splice(index, 1);
 
   // Send a response with the updated patients array
-  res.send(patients);
-});
-
+  res.send(patients);})
+  ;
+  
