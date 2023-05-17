@@ -74,10 +74,10 @@ const allPatients = await prisma.patients.findMany();
   res.json(allPatients)
 })
 
-router.get('/patients/:id', async (req, res) => {
-  const { id } = req.params
+router.get('/patients/:email', async (req, res) => {
+  const { email } = req.params
   const patients = await prisma.patients.findUnique({
-    where: { id: parseInt(id) }
+    where: { email }
   })
   const allPatients = await prisma.patients.findMany();
   res.json(allPatients)
