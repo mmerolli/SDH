@@ -92,7 +92,7 @@ router.post('/patients', async (req, res) => {
 })
 
 
-router.put('/patients:id', async (req, res) => {
+router.put('/patients:/id', async (req, res) => {
   const { id } = req.params
   const { firstname, lastname, email } = req.body
   const patients = await prisma.patients.update({where: { id: parseInt(id) },
